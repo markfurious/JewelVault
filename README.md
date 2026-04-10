@@ -72,27 +72,64 @@ A **production-ready ERP-style inventory system** built for diamond & jewelry bu
 | API | REST |
 
 ---
-
 ## 📁 Project Structure
+
+```bash
 inventory-system/
 ├── backend/
 │   ├── app/
-│   │   ├── api/v1/
+│   │   ├── api/
+│   │   │   └── v1/
+│   │   │       ├── products.py
+│   │   │       ├── inventory.py
+│   │   │       ├── sales.py
+│   │   │       └── analytics.py
 │   │   ├── core/
+│   │   │   └── config.py
 │   │   ├── models/
+│   │   │   ├── product.py
+│   │   │   ├── inventory.py
+│   │   │   ├── sale.py
+│   │   │   └── reorder.py
 │   │   ├── schemas/
+│   │   │   ├── product.py
+│   │   │   ├── inventory.py
+│   │   │   ├── sale.py
+│   │   │   ├── reorder.py
+│   │   │   └── analytics.py
 │   │   ├── services/
+│   │   │   ├── product_service.py
+│   │   │   ├── inventory_service.py
+│   │   │   ├── sale_service.py
+│   │   │   ├── analytics_service.py
+│   │   │   └── ai_query_service.py
 │   │   ├── db/
+│   │   │   └── base.py
 │   │   ├── utils/
+│   │   │   └── exceptions.py
 │   │   └── main.py
 │   ├── alembic/
+│   │   └── versions/
+│   ├── alembic.ini
 │   └── requirements.txt
+│
 └── frontend/
-├── src/
-├── index.html
-├── package.json
-└── vite.config.js
-
+    ├── src/
+    │   ├── components/
+    │   ├── pages/
+    │   │   ├── ProductsPage.jsx
+    │   │   ├── InventoryPage.jsx
+    │   │   ├── SalesPage.jsx
+    │   │   ├── CreateSalePage.jsx
+    │   │   └── ReorderSuggestionsPage.jsx
+    │   ├── services/
+    │   │   └── api.js
+    │   ├── App.jsx
+    │   ├── main.jsx
+    │   └── index.css
+    ├── index.html
+    ├── package.json
+    └── vite.config.js
 ---
 
 ## ⚡ Quick Start
