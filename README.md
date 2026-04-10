@@ -74,3 +74,86 @@ A **production-ready ERP-style inventory system** built for diamond & jewelry bu
 ---
 
 ## 📁 Project Structure
+inventory-system/
+├── backend/
+│   ├── app/
+│   │   ├── api/v1/
+│   │   ├── core/
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   ├── db/
+│   │   ├── utils/
+│   │   └── main.py
+│   ├── alembic/
+│   └── requirements.txt
+└── frontend/
+├── src/
+├── index.html
+├── package.json
+└── vite.config.js
+
+---
+
+## ⚡ Quick Start
+
+### 1️⃣ Database Setup
+```bash
+createdb inventory_db
+```
+### 2️⃣ Backend Setup
+```bash
+cd backend
+
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+pip install -r requirements.txt
+
+cp .env.example .env
+
+alembic upgrade head
+
+uvicorn app.main:app --reload --port 8000
+```
+### 3️⃣ Frontend Setup
+```bash
+cd frontend
+
+npm install
+npm run dev
+```
+### 🌐 Access
+	•	Frontend → http://localhost:3000
+	•	API Docs → http://localhost:8000/docs
+
+⸻
+
+### 📡 API Overview
+
+Products
+	•	POST /products
+	•	GET /products
+	•	PUT /products/{id}
+	•	DELETE /products/{id}
+
+Inventory
+	•	Track stock
+	•	Adjust quantities
+	•	Transaction logs
+
+Sales
+	•	Create / cancel sales
+	•	Sales history
+
+Analytics
+	•	Reorder suggestions
+	•	Sales velocity
+	•	Top products
+	•	Natural language queries
+
+
+### 🤖 AI-Ready Architecture
+```Prompt
+"Show top 10 selling products from last 30 days"
+```
