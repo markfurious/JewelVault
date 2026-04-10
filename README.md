@@ -131,7 +131,7 @@ inventory-system/
     ├── package.json
     └── vite.config.js
 ---
-
+```
 ## ⚡ Quick Start
 
 ### 1️⃣ Database Setup
