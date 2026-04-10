@@ -1,0 +1,14 @@
+This is a placeholder file.
+
+For a real 3D model, you would:
+1. Create an earring model in Blender/Maya/Cinema 4D
+2. Export as .glb (glTF binary)
+3. Place it in this directory
+4. Update the model_url in the jewelry table
+
+To quickly test, download a free earring model from:
+- https://sketchfab.com (search "earring gltf")
+- https://github.com/KhronosGroup/glTF-Sample-Models
+- https://poly.pizza (low poly 3D models)
+
+Then place the .glb file here and update the database.

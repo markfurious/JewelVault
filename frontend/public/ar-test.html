@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Try-On Test</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a2e;
+      color: #fff;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #333;
+      margin-bottom: 20px;
+    }
+    h1 { font-size: 24px; }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: #4f46e5; color: #fff; }
+    .btn-primary:hover { background: #4338ca; }
+    .btn-danger { background: #dc2626; color: #fff; }
+    .btn-success { background: #16a34a; color: #fff; }
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 20px;
+      height: calc(100vh - 180px);
+    }
+    .ar-view {
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      min-height: 500px;
+    }
+    .placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      min-height: 500px;
+      background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    }
+    .placeholder-icon { font-size: 80px; margin-bottom: 20px; }
+    .jewelry-panel {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      color: #1a1a2e;
+      overflow-y: auto;
+    }
+    .jewelry-panel h3 {
+      font-size: 18px;
+      margin-bottom: 16px;
+      color: #1a1a2e;
+    }
+    .jewelry-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .jewelry-item:hover { border-color: #4f46e5; background: #f5f3ff; }
+    .jewelry-item.selected { border-color: #4f46e5; background: #ede9fe; }
+    .jewelry-thumb {
+      width: 60px;
+      height: 60px;
+      background: #f3f4f6;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    .jewelry-info { flex: 1; margin-left: 12px; }
+    .jewelry-name { font-weight: 600; font-size: 14px; }
+    .jewelry-price { color: #16a34a; font-weight: 600; font-size: 13px; }
+    .status-bar {
+      margin-top: 16px;
+      padding: 12px;
+      background: #f3f4f6;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #666;
+    }
+    .fps-counter {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.8);
+      color: #0f0;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+      z-index: 100;
+    }
+    video {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+    canvas {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      transform: scaleX(-1);
+    }
+    .loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 20px 40px;
+      border-radius: 8px;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>💎 AR Virtual Try-On</h1>
+      <div>
+        <button class="btn btn-primary" id="startBtn" onclick="startAR()">Start Camera</button>
+        <button class="btn btn-success" id="captureBtn" onclick="captureScreenshot()" style="display:none;">📷 Capture</button>
+        <button class="btn btn-danger" id="stopBtn" onclick="stopAR()" style="display:none;">Stop</button>
+      </div>
+    </header>
+
+    <div class="main-grid">
+      <div class="ar-view" id="arView">
+        <div class="placeholder" id="placeholder">
+          <div class="placeholder-icon">🎥</div>
+          <h2>Ready to Try On</h2>
+          <p style="color:#888; margin-top:10px;">Click "Start Camera" to enable AR</p>
+        </div>
+        <video id="video" autoplay playsinline muted style="display:none;"></video>
+        <canvas id="overlay" style="display:none;"></canvas>
+        <canvas id="three-canvas" style="display:none;"></canvas>
+        <div class="fps-counter" id="fpsCounter" style="display:none;">FPS: 0</div>
+      </div>
+
+      <div class="jewelry-panel">
+        <h3>Select Earrings</h3>
+        <div id="jewelryList">
+          <div style="text-align:center; padding:40px; color:#888;">Loading...</div>
+        </div>
+        <div class="status-bar" id="statusBar" style="display:none;">
+          <div><strong>Session:</strong> <span id="sessionId"></span></div>
+          <div><strong>Duration:</strong> <span id="duration">0</span>s</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.183.2/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.183.2/examples/js/loaders/GLTFLoader.js"></script>
+
+  <script>
+    // State
+    let selectedJewelry = null;
+    let arActive = false;
+    let startTime = null;
+    let durationInterval = null;
+    let fpsInterval = null;
+    let frameCount = 0;
+    let lastFpsTime = Date.now();
+    let scene, camera, renderer, earringMesh;
+    let faceMesh, video, overlayCtx, threeCtx;
+
+    // Load jewelry list
+    async function loadJewelry() {
+      try {
+        const res = await fetch('/api/v1/jewelry?type=earring');
+        const data = await res.json();
+        renderJewelryList(data.items || []);
+      } catch (err) {
+        document.getElementById('jewelryList').innerHTML =
+          '<div style="text-align:center; padding:40px; color:#dc2626;">Failed to load jewelry</div>';
+      }
+    }
+
+    function renderJewelryList(items) {
+      const container = document.getElementById('jewelryList');
+      if (!items || items.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:40px; color:#888;">No earrings available</div>';
+        return;
+      }
+
+      container.innerHTML = items.map((item, i) => `
+        <div class="jewelry-item ${i === 0 ? 'selected' : ''}" onclick="selectJewelry('${item.id}', '${item.name}', '${item.model_url}')">
+          <div class="jewelry-thumb">💎</div>
+          <div class="jewelry-info">
+            <div class="jewelry-name">${item.name}</div>
+            <div class="jewelry-price">$${parseFloat(item.price).toFixed(2)}</div>
+          </div>
+        </div>
+      `).join('');
+
+      if (items.length > 0) {
+        selectJewelry(items[0].id, items[0].name, items[0].model_url);
+      }
+    }
+
+    function selectJewelry(id, name, modelUrl) {
+      selectedJewelry = { id, name, modelUrl };
+      document.querySelectorAll('.jewelry-item').forEach((el, i) => {
+        el.classList.toggle('selected', i === 0);
+      });
+      if (arActive) {
+        loadJewelryModel(modelUrl);
+      }
+    }
+
+    async function startAR() {
+      try {
+        video = document.getElementById('video');
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' }
+        });
+        video.srcObject = stream;
+        await new Promise(resolve => {
+          video.onloadedmetadata = () => { video.play(); resolve(); };
+        });
+
+        // Setup canvases
+        const overlay = document.getElementById('overlay');
+        const threeCanvas = document.getElementById('three-canvas');
+        overlay.width = video.videoWidth;
+        overlay.height = video.videoHeight;
+        threeCanvas.width = video.videoWidth;
+        threeCanvas.height = video.videoHeight;
+        overlayCtx = overlay.getContext('2d');
+
+        // Show elements
+        document.getElementById('placeholder').style.display = 'none';
+        video.style.display = 'block';
+        overlay.style.display = 'block';
+        threeCanvas.style.display = 'block';
+        document.getElementById('fpsCounter').style.display = 'block';
+        document.getElementById('startBtn').style.display = 'none';
+        document.getElementById('captureBtn').style.display = 'block';
+        document.getElementById('stopBtn').style.display = 'block';
+        document.getElementById('statusBar').style.display = 'block';
+
+        // Setup Three.js
+        setupThreeJS(threeCanvas);
+
+        // Setup FaceMesh
+        setupFaceMesh(video);
+
+        arActive = true;
+        startTime = Date.now();
+        durationInterval = setInterval(() => {
+          document.getElementById('duration').textContent = Math.floor((Date.now() - startTime) / 1000);
+        }, 1000);
+
+        // Session ID
+        document.getElementById('sessionId').textContent = 'session_' + Date.now().toString(36);
+
+        // Load model
+        if (selectedJewelry) {
+          loadJewelryModel(selectedJewelry.modelUrl);
+        }
+
+      } catch (err) {
+        alert('Failed to start camera: ' + err.message);
+      }
+    }
+
+    function setupThreeJS(canvas) {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, canvas.width / canvas.height, 0.1, 1000);
+      camera.position.z = 500;
+
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setSize(canvas.width, canvas.height);
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+      scene.add(ambientLight);
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+      directionalLight.position.set(0, 100, 100);
+      scene.add(directionalLight);
+    }
+
+    function setupFaceMesh(videoElement) {
+      faceMesh = new FaceMesh({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+      });
+
+      faceMesh.setOptions({
+        maxNumFaces: 1,
+        refineLandmarks: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
+      });
+
+      faceMesh.onResults((results) => {
+        // FPS counter
+        frameCount++;
+        const now = Date.now();
+        if (now - lastFpsTime >= 1000) {
+          document.getElementById('fpsCounter').textContent = 'FPS: ' + frameCount;
+          frameCount = 0;
+          lastFpsTime = now;
+        }
+
+        overlayCtx.clearRect(0, 0, overlayCtx.canvas.width, overlayCtx.canvas.height);
+
+        if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+          const landmarks = results.multiFaceLandmarks[0];
+          const w = videoElement.videoWidth;
+          const h = videoElement.videoHeight;
+
+          // Get ear positions
+          const leftEar = getEarPosition(landmarks, [127,128,129,130,131,132,232,233,234,235,236], w, h);
+          const rightEar = getEarPosition(landmarks, [356,357,358,359,360,361,452,453,454,455,456], w, h);
+
+          // Update earring position
+          if (earringMesh) {
+            const x = ((leftEar.x + rightEar.x) / 2 / w - 0.5) * 200;
+            const y = -((leftEar.y + rightEar.y) / 2 / h - 0.5) * 200;
+            earringMesh.position.set(x, y, -50 + (leftEar.z + rightEar.z) * 50);
+            earringMesh.lookAt(camera.position);
+          }
+        }
+      });
+
+      const cam = new Camera(videoElement, {
+        onFrame: async () => { await faceMesh.send({ image: videoElement }); },
+        width: videoElement.videoWidth,
+        height: videoElement.videoHeight
+      });
+      cam.start();
+    }
+
+    function getEarPosition(landmarks, indices, w, h) {
+      let x = 0, y = 0, z = 0, count = 0;
+      indices.forEach(i => {
+        if (landmarks[i]) { x += landmarks[i].x; y += landmarks[i].y; z += landmarks[i].z; count++; }
+      });
+      return count > 0 ? { x: x/count * w, y: y/count * h, z: z/count } : { x: 0, y: 0, z: 0 };
+    }
+
+    function loadJewelryModel(url) {
+      if (!scene) return;
+
+      if (earringMesh) {
+        scene.remove(earringMesh);
+        earringMesh = null;
+      }
+
+      // Create simple sphere as placeholder (real model loading requires GLTFLoader)
+      const geometry = new THREE.SphereGeometry(15, 32, 32);
+      const material = new THREE.MeshStandardMaterial({
+        color: 0xffd700,
+        metalness: 0.8,
+        roughness: 0.2
+      });
+      earringMesh = new THREE.Mesh(geometry, material);
+      scene.add(earringMesh);
+    }
+
+    function captureScreenshot() {
+      const canvas = document.createElement('canvas');
+      const video = document.getElementById('video');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0);
+      ctx.drawImage(document.getElementById('three-canvas'), 0, 0);
+
+      const link = document.createElement('a');
+      link.download = 'tryon-' + Date.now() + '.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    function stopAR() {
+      if (video && video.srcObject) {
+        video.srcObject.getTracks().forEach(t => t.stop());
+      }
+      if (faceMesh) {
+        faceMesh.close();
+      }
+      if (durationInterval) {
+        clearInterval(durationInterval);
+      }
+
+      document.getElementById('placeholder').style.display = 'flex';
+      video.style.display = 'none';
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('three-canvas').style.display = 'none';
+      document.getElementById('fpsCounter').style.display = 'none';
+      document.getElementById('startBtn').style.display = 'block';
+      document.getElementById('captureBtn').style.display = 'none';
+      document.getElementById('stopBtn').style.display = 'none';
+      document.getElementById('statusBar').style.display = 'none';
+
+      arActive = false;
+    }
+
+    // Initialize
+    loadJewelry();
+  </script>
+</body>
+</html>
