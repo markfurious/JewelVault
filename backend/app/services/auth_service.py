@@ -79,11 +79,12 @@ def authenticate_user(db: Session, username: str, password: str) -> Optional[Use
     user = db.query(User).filter(User.username == username).first()
     if not user:
         return None
-    if not verify_password(password, user.password_hash):
-        return None
     if not user.is_active:
         return None
     if user.is_locked:
+        return None
+    # Truncate password to 72 bytes to avoid bcrypt limitation
+    if not verify_password(password[:72], user.password_hash):
         return None
     return user
 

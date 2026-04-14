@@ -6,6 +6,8 @@ from app.models.reorder import ReorderRule
 from app.models.user import User
 from app.models.jewelry import Jewelry, TryOnLog
 from app.models.metal_price import MetalPrice, JewelryPriceLog
+from app.models.agent_audit import AgentAuditLog
+from app.models.agent_request import AgentRequest
 
 __all__ = [
     "Product",
@@ -19,4 +21,6 @@ __all__ = [
     "TryOnLog",
     "MetalPrice",
     "JewelryPriceLog",
+    "AgentAuditLog",
+    "AgentRequest",
 ]

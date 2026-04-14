@@ -18,6 +18,8 @@ from app.api.v1 import (
     companies_router,
     jewelry_router,
     metal_prices_router,
+    agents_router,
+    agent_requests_router,
 )
 from app.utils.exceptions import AppException
 
@@ -71,6 +73,8 @@ A production-ready inventory management system designed for diamond and jewelry 
     app.include_router(companies_router, prefix="/api/v1")
     app.include_router(jewelry_router, prefix="/api/v1")
     app.include_router(metal_prices_router, prefix="/api/v1")
+    app.include_router(agents_router, prefix="/api/v1")
+    app.include_router(agent_requests_router, prefix="/api/v1")
 
     # Health check endpoint
     @app.get("/health", tags=["health"])

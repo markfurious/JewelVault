@@ -40,6 +40,11 @@ export default function Layout({ children }) {
               AR Try-On
             </NavLink>
           </li>
+          <li>
+            <NavLink to="/ai-agents" end={({ isActive }) => isActive ? 'active' : ''}>
+              AI Agents
+            </NavLink>
+          </li>
           {isSuperAdminUser && (
             <li style={{ position: 'relative' }}>
               <button
@@ -124,11 +129,26 @@ export default function Layout({ children }) {
                       padding: '10px 16px',
                       color: '#333',
                       textDecoration: 'none',
+                      borderBottom: '1px solid #eee',
                     }}
                     onMouseEnter={(e) => e.target.style.background = '#f5f5f5'}
                     onMouseLeave={(e) => e.target.style.background = 'transparent'}
                   >
                     Metal Prices
+                  </NavLink>
+                  <NavLink
+                    to="/agent-requests"
+                    onClick={() => setShowAdminDropdown(false)}
+                    style={{
+                      display: 'block',
+                      padding: '10px 16px',
+                      color: '#333',
+                      textDecoration: 'none',
+                    }}
+                    onMouseEnter={(e) => e.target.style.background = '#f5f5f5'}
+                    onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                  >
+                    Agent Requests
                   </NavLink>
                 </div>
               )}
