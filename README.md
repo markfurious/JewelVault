@@ -328,41 +328,19 @@ response = service.parse_query("Show top 10 selling products from last 30 days")
   "time_range": {"period": "30 days"}
 }
 ```
-
 ## 📸 Screenshots
 
-### 📊 Dashboard
-![Dashboard](./Dashboard.jpeg)
+| Dashboard | Stock |
+|----------|-------|
+| ![](./dashboard.jpeg) | ![](./stock.jpeg) |
 
----
+| Sales | AI Agents |
+|------|----------|
+| ![](./sales.jpeg) | ![](./ai-agents.jpeg) |
 
-### 📦 Stock Management
-![Stock](./stock.jpeg)
-
----
-
-### 💰 Sales Register
-![Sales](./Sales Register.jpeg)
-
----
-
-### 🤖 AI Agent Command Center
-![AI Agents](./AI Agents.jpeg)
-
----
-
-### ⚙️ Admin Management
-![Admin](./Admin Management.jpeg)
-
----
-
-### 🔁 Return Requests
-![Returns](./Return Request page.jpeg)
-
----
-
-### 🪙 Metal Price Management
-![Metal Price](./metal price management.jpeg)
+| Admin | Returns | Metal |
+|------|---------|-------|
+| ![](./Admin_mangement.jpeg) | ![](./returns.jpeg) | ![](./metal.jpeg) |
 ## Scaling to Full ERP
 
 ### Phase 1: Vendor Management
