@@ -329,41 +329,43 @@ response = service.parse_query("Show top 10 selling products from last 30 days")
 }
 ```
 
-### Extension Points for LLM Integration
+## 📸 Screenshots
 
-1. **`ai_query_service.py`**: Replace rule-based parsing with LLM calls
-2. **Prompt Template**: Define structured output schema for the LLM
-3. **Query Execution**: Map structured queries to SQLAlchemy queries
-4. **Caching**: Implement query result caching for common questions
+### 📊 Dashboard
+![Dashboard](./Dashboard.jpeg)
 
+---
+
+### 📦 Stock Management
+![Stock](./stock.jpeg)
+
+---
+
+### 💰 Sales Register
+![Sales](./Sales Register.jpeg)
+
+---
+
+### 🤖 AI Agent Command Center
+![AI Agents](./AI Agents.jpeg)
+
+---
+
+### ⚙️ Admin Management
+![Admin](./Admin Management.jpeg)
+
+---
+
+### 🔁 Return Requests
+![Returns](./Return Request page.jpeg)
+
+---
+
+### 🪙 Metal Price Management
+![Metal Price](./metal price management.jpeg)
 ## Scaling to Full ERP
 
-### Phase 1: Multi-Store Inventory
-
-```python
-# Add to Inventory model
-class Inventory(Base):
-    store_id = Column(UUID, ForeignKey('stores.id'))
-    warehouse_id = Column(UUID, ForeignKey('warehouses.id'))
-    transfer_history = relationship('StockTransfer')
-
-# New tables
-class Store(Base):
-    id = Column(UUID, PK)
-    name = Column(String)
-    location = Column(String)
-    is_active = Column(Boolean)
-
-class StockTransfer(Base):
-    id = Column(UUID, PK)
-    from_store_id = Column(UUID, ForeignKey('stores.id'))
-    to_store_id = Column(UUID, ForeignKey('stores.id'))
-    product_id = Column(UUID, ForeignKey('products.id'))
-    quantity = Column(Numeric)
-    status = Column(String)  # PENDING, IN_TRANSIT, COMPLETED
-```
-
-### Phase 2: Vendor Management
+### Phase 1: Vendor Management
 
 ```python
 class Vendor(Base):
@@ -381,7 +383,7 @@ class PurchaseOrder(Base):
     expected_date = Column(DateTime)
 ```
 
-### Phase 3: Diamond-Specific Attributes
+### Phase 2: Diamond-Specific Attributes
 
 ```python
 # Extend Product.attributes with structured schema
