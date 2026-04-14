@@ -24,25 +24,6 @@ A **production-ready ERP-style inventory system** built for diamond & jewelry bu
 - Natural language queries (AI-ready)
 - Feature tagging (bestseller, limited edition, etc.)
 
----
-
-### 🪞 AR Virtual Try-On
-- Three.js 3D rendering
-- MediaPipe face mesh tracking
-- Real-time camera overlay
-- Session analytics & logging
-- Screenshot capture
-
----
-
-### 🧊 3D Model Generation
-- Batch generation via Excel upload
-- S3 / HTTP image ingestion
-- GPU-based processing (TripoSR)
-- SKU validation (SI-XXX format)
-- Mandatory schema enforcement
-
----
 
 ### 💰 Metal Price Tracking
 - Live gold, silver, platinum prices
