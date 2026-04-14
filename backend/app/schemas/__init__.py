@@ -32,6 +32,13 @@ from app.schemas.auth import (
     UserChangePassword,
     UserResponse,
 )
+from app.schemas.agent_request import (
+    AgentRequestCreate,
+    AgentRequestResponse,
+    AgentRequestReview,
+    RequestStatus,
+    RequestType,
+)
 
 __all__ = [
     "ProductCreate",
@@ -57,4 +64,9 @@ __all__ = [
     "UserUpdate",
     "UserChangePassword",
     "UserResponse",
+    "AgentRequestCreate",
+    "AgentRequestResponse",
+    "AgentRequestReview",
+    "RequestStatus",
+    "RequestType",
 ]

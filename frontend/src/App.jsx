@@ -14,6 +14,8 @@ import InventoryPage from './pages/InventoryPage';
 import ARTryOnPage from './pages/ar/ARTryOnPage';
 import Generate3DModelsPage from './pages/admin/Generate3DModelsPage';
 import MetalPricesPage from './pages/admin/MetalPricesPage';
+import AgentCommandPage from './pages/AgentCommandPage';
+import AgentRequestsPage from './pages/AgentRequestsPage';
 
 export default function App() {
   return (
@@ -31,6 +33,8 @@ export default function App() {
       <Route path="/admin/generate-3d" element={<Layout><Generate3DModelsPage /></Layout>} />
       <Route path="/admin/metal-prices" element={<Layout><MetalPricesPage /></Layout>} />
       <Route path="/ar-tryon" element={<Layout><ARTryOnPage /></Layout>} />
+      <Route path="/ai-agents" element={<Layout><AgentCommandPage /></Layout>} />
+      <Route path="/agent-requests" element={<Layout><AgentRequestsPage /></Layout>} />
     </Routes>
   );
 }
