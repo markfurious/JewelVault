@@ -332,7 +332,7 @@ response = service.parse_query("Show top 10 selling products from last 30 days")
 
 | Dashboard | Stock |
 |----------|-------|
-| ![](./dashboard.jpeg) | ![](./stock.jpeg) |
+| ![](./Dashboard.jpeg) | ![](./stock.jpeg) |
 
 | Sales | AI Agents |
 |------|----------|
