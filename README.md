@@ -175,11 +175,6 @@ Analytics
 ```Prompt
 "Show top 10 selling products from last 30 days"
 ```
-### 4. Access the Application
-
-- **Frontend**: http://localhost:3000
-- **API Docs**: http://localhost:8000/docs
-- **Alternative Docs**: http://localhost:8000/redoc
 
 ## API Endpoints
 
